@@ -1,26 +1,38 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { Home } from './components/Home';
+import { Layout, Menu, Breadcrumb } from 'antd';
+
+import 'antd/dist/antd.css';
 import './App.css';
 
-function App() {
+const { Header, Footer, Content } = Layout;
+
+export const App = (props) => {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Layout>
+        <Header>
+          <div className="logo" style={{color: "white"}}>
+            Devxican
+          </div>
+          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
+            <Menu.Item key="1">Home</Menu.Item>
+            <Menu.Item key="2">Foros</Menu.Item>
+          </Menu>
+        </Header>
+        <Content>
+          <Router>
+            <Switch>
+              <Route path="/">
+                <Home />
+              </Route>
+            </Switch>
+          </Router>
+        </Content>
+        <Footer><a>Términos y Condiciones</a> | <a>Política de Privacidad</a> | <a>Aviso Legal</a></Footer>
+      </Layout>
+      
     </div>
   );
 }
-
-export default App;
