@@ -1,9 +1,14 @@
-import React from 'react';
-import { Layout, Breadcrumb, List, Avatar, Button, Row, Col, Comment, Form, Input, Divider } from 'antd';
+import React, { createElement, useState } from 'react';
+import { Layout, Breadcrumb, Avatar, Button, Row, Col, Comment, Form, Input, Divider, Tooltip } from 'antd';
+import { DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled } from '@ant-design/icons';
 
 const { Content } = Layout;
 
 export const QuestionDetails = () => {
+
+    const [likes, setLikes] = useState(6);
+    const [dislikes, setDislikes] = useState(2);
+    const [action, setAction] = useState(null);
 
     const data = {
           title: 'Ayuda con pregunta de arreglos para entrevista!',
@@ -31,6 +36,22 @@ export const QuestionDetails = () => {
         </>
     );
 
+    const actions = [
+        <Tooltip key="comment-basic-like" title="Like">
+          <span>
+            {createElement(action === 'liked' ? LikeFilled : LikeOutlined)}
+            <span className="comment-action"> {likes}</span>
+          </span>
+        </Tooltip>,
+        <Tooltip key="comment-basic-dislike" title="Dislike">
+          <span>
+            {createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined)}
+            <span className="comment-action"> {dislikes}</span>
+          </span>
+        </Tooltip>,
+        <span key="comment-basic-reply-to">Responder</span>,
+      ];
+
     return (
         <div>
 
@@ -52,6 +73,33 @@ export const QuestionDetails = () => {
                             <br/>
 
                             <p>{data.description}</p>
+
+                            <Divider />
+
+                            <h3>Respuestas</h3>
+
+                            <Comment
+                                actions={actions}
+                                author={<a>Han Solo</a>}
+                                avatar={
+                                    <Avatar
+                                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                                    alt="Han Solo"
+                                    />
+                                }
+                                content={
+                                    <p>
+                                    We supply a series of design principles, practical patterns and high quality design
+                                    resources (Sketch and Axure), to help people create their product prototypes beautifully
+                                    and efficiently.
+                                    </p>
+                                }
+                                // datetime={
+                                //     //<Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
+                                //     //<span>{moment().fromNow()}</span>
+                                //     //</Tooltip>
+                                // }
+                                />
 
                             <Divider />
 
