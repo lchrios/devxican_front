@@ -1,11 +1,9 @@
 import React from 'react';
-import { Layout, Breadcrumb, List, Avatar, Button, Skeleton, Row, Col } from 'antd';
+import { Layout, Breadcrumb, List, Avatar, Button, Row, Col } from 'antd';
 
 const { Content } = Layout;
 
 export const Home = () => {
-    
-    //const { initLoading, loading } = this.state;
 
     const data = [
         {
@@ -28,6 +26,7 @@ export const Home = () => {
 
     return (
         <div>
+
             {/* <Breadcrumb style={{ margin: '16px 0' }}>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
             </Breadcrumb> */}
