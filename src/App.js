@@ -13,18 +13,23 @@ const { Header, Footer, Content } = Layout;
 export const App = (props) => {
   return (
     <div className="App">
-      <Layout style={{height:"100vh"}}>
+      <Router>
+      <Layout>
         <Header>
-          <div className="logo" style={{color: "white"}}>
-            Devxican
+          <div className="logo">
+            <Link to="/" style={{color: "white", fontWeight: "bold"}}>Devxican</Link>
           </div>
           <Menu theme="dark" mode="horizontal">
-            <Menu.Item key="1">Inicio</Menu.Item>
-            <Menu.Item key="2">Foros</Menu.Item>
+            <Menu.Item key="1">
+              <Link to="/">Inicio</Link>
+            </Menu.Item>
+            <Menu.Item key="2">
+              <Link to="/foros">Foros</Link>
+            </Menu.Item>
           </Menu>
         </Header>
         <Content>
-          <Router>
+          
             <Switch>
               <Route path="/pregunta/:id">
                 <QuestionDetails />
@@ -33,11 +38,11 @@ export const App = (props) => {
                 <Home />
               </Route>
             </Switch>
-          </Router>
+          
         </Content>
         <Footer><a>Términos y Condiciones</a> | <a>Política de Privacidad</a> | <a>Aviso Legal</a></Footer>
       </Layout>
-      
+      </Router>
     </div>
   );
 }

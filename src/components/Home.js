@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Breadcrumb, List, Avatar, Button, Row, Col } from 'antd';
+import { Layout, List, Avatar, Button, Row, Col } from 'antd';
 
 const { Content } = Layout;
 
@@ -8,28 +8,28 @@ export const Home = () => {
     const data = [
         {
           title: '¿Cómo validar para que solo puedan ingresar datos flotantes?',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget lacus eu tellus pharetra auctor. Nulla maximus aliquam nunc. Donec dictum hendrerit nisl, non tempor urna laoreet fringilla.'
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget lacus eu tellus pharetra auctor. Nulla maximus aliquam nunc. Donec dictum hendrerit nisl, non tempor urna laoreet fringilla.',
+          id: '12'
         },
         {
           title: '¿Cómo puedo obtener la información de un Stream?',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget lacus eu tellus pharetra auctor. Nulla maximus aliquam nunc. Donec dictum hendrerit nisl, non tempor urna laoreet fringilla.'
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget lacus eu tellus pharetra auctor. Nulla maximus aliquam nunc. Donec dictum hendrerit nisl, non tempor urna laoreet fringilla.',
+          id: '11'
         },
         {
           title: 'Regresión lineal simple con JavaScript TensorFlow',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget lacus eu tellus pharetra auctor. Nulla maximus aliquam nunc. Donec dictum hendrerit nisl, non tempor urna laoreet fringilla.'
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget lacus eu tellus pharetra auctor. Nulla maximus aliquam nunc. Donec dictum hendrerit nisl, non tempor urna laoreet fringilla.',
+          id: '10'
         },
         {
           title: 'Ayuda con pregunta de arreglos para entrevista!',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget lacus eu tellus pharetra auctor. Nulla maximus aliquam nunc. Donec dictum hendrerit nisl, non tempor urna laoreet fringilla.'
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget lacus eu tellus pharetra auctor. Nulla maximus aliquam nunc. Donec dictum hendrerit nisl, non tempor urna laoreet fringilla.',
+          id: '9'
         },
       ];
 
     return (
         <div>
-
-            {/* <Breadcrumb style={{ margin: '16px 0' }}>
-                <Breadcrumb.Item>Home</Breadcrumb.Item>
-            </Breadcrumb> */}
 
             <Content style={{ padding: '0 50px' }}>
 
@@ -46,11 +46,11 @@ export const Home = () => {
                                 dataSource={data}
                                 renderItem={item => (
                                 <List.Item
-                                    actions={[<a key="list-loadmore-edit">Ver pregunta</a>]}
+                                    actions={[<a key="list-loadmore-edit" href={'/pregunta/' + item.id} >Ver pregunta</a>]}
                                 >
                                     <List.Item.Meta
                                     avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                                    title={<a>{item.title}</a>}
+                                    title={<a href={'/pregunta/' + item.id}>{item.title}</a>}
                                     description={item.description}
                                     />
                                 </List.Item>

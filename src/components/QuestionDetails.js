@@ -30,20 +30,20 @@ export const QuestionDetails = () => {
           </Form.Item>
           <Form.Item>
             <Button htmlType="submit" type="primary">
-              Publicar respusta
+              Publicar respuesta
             </Button>
           </Form.Item>
         </>
     );
 
     const actions = [
-        <Tooltip key="comment-basic-like" title="Like">
+        <Tooltip key="comment-basic-like" title="Me gusta">
           <span>
             {createElement(action === 'liked' ? LikeFilled : LikeOutlined)}
             <span className="comment-action"> {likes}</span>
           </span>
         </Tooltip>,
-        <Tooltip key="comment-basic-dislike" title="Dislike">
+        <Tooltip key="comment-basic-dislike" title="No me gusta">
           <span>
             {createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined)}
             <span className="comment-action"> {dislikes}</span>
@@ -94,11 +94,7 @@ export const QuestionDetails = () => {
                                     and efficiently.
                                     </p>
                                 }
-                                // datetime={
-                                //     //<Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
-                                //     //<span>{moment().fromNow()}</span>
-                                //     //</Tooltip>
-                                // }
+                                datetime={<span>{date}</span>}
                                 />
 
                             <Divider />
