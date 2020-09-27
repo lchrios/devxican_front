@@ -7,6 +7,7 @@ import { QuestionDetails } from './components/QuestionDetails';
 
 import 'antd/dist/antd.css';
 import './App.css';
+import { PostQuestion } from './components/PostQuestion';
 
 const { Header, Footer, Content } = Layout;
 
@@ -33,6 +34,9 @@ export const App = (props) => {
             <Switch>
               <Route path="/pregunta/:id">
                 <QuestionDetails />
+              </Route>
+              <Route path="/nueva">
+                <PostQuestion />
               </Route>
               <Route path="/">
                 <Home />
