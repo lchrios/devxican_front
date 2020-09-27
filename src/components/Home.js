@@ -41,7 +41,7 @@ export const Home = () => {
                                     <List.Item.Meta
                                     avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
                                     title={<a href={'/pregunta/' + item._id}>{item.title}</a>}
-                                    description={item.description}
+                                    description={item.description.replace(/<\/?[^>]+(>|$)/g, "")}
                                     />
                                 </List.Item>
                                 )}

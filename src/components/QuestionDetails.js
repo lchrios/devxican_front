@@ -78,8 +78,8 @@ export const QuestionDetails = () => {
                 <h5>Publicado por <a>{data.author}</a> el {date}</h5>
 
                 <br />
-
-                <p>{data.description}</p>
+              
+                <div dangerouslySetInnerHTML={{ __html: data.description }} />
 
                 <Divider />
 
