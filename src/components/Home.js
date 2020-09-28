@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, List, Avatar, Button, Row, Col } from 'antd';
 import { BrowserRouter as Router, Link } from "react-router-dom";
+import { useCookies } from 'react-cookie';
+import { LoginButton } from './LoginButton';
+import { LogoutButton } from './LogoutButton';
 
 const { Content } = Layout;
 
 export const Home = () => {
 
     const [data, setData] = useState();
+    const [cookies, setCookie] = useCookies(['name', 'pic_src', 'email', 'isAuth']);
     
     useEffect(() => {
         if(!data) {
@@ -50,15 +54,29 @@ export const Home = () => {
 
                         <Col span={6} style={{ padding: '0 50px' }}>
 
-                            <Link to="/nueva">
-                                <Button type='primary' size='large'>Publicar una pregunta</Button>
-                            </Link>
+                            { cookies.isAuth === 'true' && 
+                                <span>
+                                    
+                                    <Link to="/nueva">
+                                        <Button type='primary' size='large'>Publicar una pregunta</Button>
+                                    </Link>
 
-                            <br/><br/>
+                                    <br/><br/>                                    
+                                    <p><a>Mis preguntas recientes</a></p>
+                                    <p><a>Mis respuestas recientes</a></p>
+                                    <p><a>Preguntas populares en la red</a></p>
+
+                                    <LogoutButton />
+                                </span>
+                            }
+
+                            { cookies.isAuth === 'false' && 
+                                <span>
+                                    <h3>Únete a la conversación</h3>
+                                    <LoginButton />
+                                </span>
                             
-                            <p><a>Mis preguntas recientes</a></p>
-                            <p><a>Mis respuestas recientes</a></p>
-                            <p><a>Preguntas populares en la red</a></p>
+                            }
 
                         </Col>
 

@@ -1,7 +1,7 @@
 import React, { createElement, useState } from 'react';
 import { Layout, Breadcrumb, Avatar, Button, Row, Col, Comment, Form, Input, Divider, Tooltip, Radio } from 'antd';
-import { DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled } from '@ant-design/icons';
 import { useHistory } from "react-router-dom";
+import { useCookies } from 'react-cookie';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -37,6 +37,7 @@ export const PostQuestion = () => {
   const [title, setTile] = useState();
   const [author, setAuthor] = useState();
   const [description, setDescription] = useState();
+  const [cookies, setCookie] = useCookies(['name', 'pic_src', 'email', 'isAuth']);
 
   let history = useHistory();
 
@@ -77,7 +78,7 @@ export const PostQuestion = () => {
                           />
                         </Form.Item>
                         <Form.Item>
-                          <Button type="primary" onClick={() => {postEntry(title, 'Anonimous', description, history)}}>Publicar</Button>
+                          <Button type="primary" onClick={() => {postEntry(title, cookies.name, description, history)}}>Publicar</Button>
                         </Form.Item>
                       </Form>
 

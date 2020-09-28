@@ -2,6 +2,7 @@ import React, { createElement, useEffect, useState } from 'react';
 import { Layout, Breadcrumb, Avatar, Button, Row, Col, Comment, Form, Input, Divider, Tooltip } from 'antd';
 import { DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled } from '@ant-design/icons';
 import { BrowserRouter as Router, useParams, Link, useHistory } from "react-router-dom";
+import { useCookies } from 'react-cookie';
 
 const { Content } = Layout;
 
@@ -30,13 +31,14 @@ const postComment = (questionId, author, description, useForceUpdate) => {
 export const QuestionDetails = () => {
 
   const [data, setData] = useState();
-  const [likes, setLikes] = useState(10);
-  const [dislikes, setDislikes] = useState(5);
+  const [likes, setLikes] = useState(20);
+  const [dislikes, setDislikes] = useState(10);
   const [action, setAction] = useState(null);
   const [date, setDate] = useState();
   const [form, ] = useState();
   const [comment, setComment] = useState();
   const [responses, setResponses] = useState([]);
+  const [cookies, setCookie] = useCookies(['name', 'pic_src', 'email', 'isAuth']);
 
   const useForceUpdate = () => useState()[1];
 
@@ -67,7 +69,7 @@ export const QuestionDetails = () => {
               comments.push(
                 <Comment
                   actions={[
-                    <Tooltip key="comment-basic-like" title="Me gusta">
+                    <Tooltip key="comment-basic-like" title="Me gusta" >
                       <span>
                         {createElement(action === 'liked' ? LikeFilled : LikeOutlined)}
                         <span className="comment-action"> {data[0].answers[i].likes}</span>
@@ -78,8 +80,7 @@ export const QuestionDetails = () => {
                         {createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined)}
                         <span className="comment-action"> {data[0].answers[i].dislikes}</span>
                       </span>
-                    </Tooltip>,
-                    <span key="comment-basic-reply-to">Responder</span>,
+                    </Tooltip>
                   ]}
                   author={data[0].answers[i].author}
                   avatar={
@@ -152,7 +153,7 @@ export const QuestionDetails = () => {
                           htmlType="submit" 
                           type="primary" 
                           onClick={() => {
-                            postComment(id, 'test', comment, useForceUpdate)
+                            postComment(id, cookies.name, comment, useForceUpdate)
                           }}
                         >
                           Publicar respuesta

@@ -4,10 +4,11 @@ import { Layout, Menu } from 'antd';
 
 import { Home } from './components/Home';
 import { QuestionDetails } from './components/QuestionDetails';
+import { PostQuestion } from './components/PostQuestion';
+import { Profile } from './components/Profile';
 
 import 'antd/dist/antd.css';
 import './App.css';
-import { PostQuestion } from './components/PostQuestion';
 
 const { Header, Footer, Content } = Layout;
 
@@ -38,9 +39,13 @@ export const App = (props) => {
               <Route path="/nueva">
                 <PostQuestion />
               </Route>
+              <Route path="/perfil">
+                <Profile />
+              </Route>
               <Route path="/">
                 <Home />
               </Route>
+              
             </Switch>
           
         </Content>
