@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Link } from "react-router-dom";
 
 const { Content } = Layout;
 
-
 export const Home = () => {
 
     const [data, setData] = useState();

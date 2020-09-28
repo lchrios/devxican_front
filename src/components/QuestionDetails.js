@@ -1,62 +1,104 @@
 import React, { createElement, useEffect, useState } from 'react';
 import { Layout, Breadcrumb, Avatar, Button, Row, Col, Comment, Form, Input, Divider, Tooltip } from 'antd';
 import { DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled } from '@ant-design/icons';
-import { BrowserRouter as Router, useParams, Link } from "react-router-dom";
+import { BrowserRouter as Router, useParams, Link, useHistory } from "react-router-dom";
 
 const { Content } = Layout;
+
+const postComment = (questionId, author, description, useForceUpdate) => {
+  fetch('http://localhost:9999/questions/' + questionId + '/comments', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    body: JSON.stringify({
+      "date" : new Date(),
+      "author" : author,
+      "comment": description,
+      "answers" : [],
+      "likes" : 0,
+      "dislikes"   : 0
+    })
+  })
+  .then(resp => {
+    window.location.reload();
+  })
+}
+
 
 export const QuestionDetails = () => {
 
   const [data, setData] = useState();
-  const [likes, setLikes] = useState(6);
-  const [dislikes, setDislikes] = useState(2);
+  const [likes, setLikes] = useState(10);
+  const [dislikes, setDislikes] = useState(5);
   const [action, setAction] = useState(null);
   const [date, setDate] = useState();
+  const [form, ] = useState();
+  const [comment, setComment] = useState();
+  const [responses, setResponses] = useState([]);
+
+  const useForceUpdate = () => useState()[1];
 
   let { id } = useParams();
+  let history = useHistory();
+
+  const { TextArea } = Input;
+
+  var comments = [];
+
 
   useEffect(() => {
     if (!data) {
+
       fetch('http://localhost:9999/questions/' + id)
         .then(response => response.json())
         .then(data => {
+
           setData(data[0]);
+
           var tmp_date = new Date(data[0].date);
           const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
           setDate(tmp_date.toLocaleDateString('es-MX', options).toString());
+
+          if(data[0].answers){
+            for(var i=0; i< data[0].answers.length; i++){
+              console.log(data[0].answers[i].author)
+              comments.push(
+                <Comment
+                  actions={[
+                    <Tooltip key="comment-basic-like" title="Me gusta">
+                      <span>
+                        {createElement(action === 'liked' ? LikeFilled : LikeOutlined)}
+                        <span className="comment-action"> {data[0].answers[i].likes}</span>
+                      </span>
+                    </Tooltip>,
+                    <Tooltip key="comment-basic-dislike" title="No me gusta">
+                      <span>
+                        {createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined)}
+                        <span className="comment-action"> {data[0].answers[i].dislikes}</span>
+                      </span>
+                    </Tooltip>,
+                    <span key="comment-basic-reply-to">Responder</span>,
+                  ]}
+                  author={data[0].answers[i].author}
+                  avatar={
+                    <Avatar
+                      src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                      alt="Han Solo"
+                    />
+                  }
+                  content={data[0].answers[i].comment}
+                  datetime={<span>{data[0].answers.date}</span>}
+                />
+              );
+            }
+            setResponses(comments);
+          }
         });
+
     }
   });
-
-  const { TextArea } = Input;
-  const Editor = () => (
-    <>
-      <Form.Item>
-        <TextArea rows={4} />
-      </Form.Item>
-      <Form.Item>
-        <Button htmlType="submit" type="primary">
-          Publicar respuesta
-          </Button>
-      </Form.Item>
-    </>
-  );
-
-  const actions = [
-    <Tooltip key="comment-basic-like" title="Me gusta">
-      <span>
-        {createElement(action === 'liked' ? LikeFilled : LikeOutlined)}
-        <span className="comment-action"> {likes}</span>
-      </span>
-    </Tooltip>,
-    <Tooltip key="comment-basic-dislike" title="No me gusta">
-      <span>
-        {createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined)}
-        <span className="comment-action"> {dislikes}</span>
-      </span>
-    </Tooltip>,
-    <span key="comment-basic-reply-to">Responder</span>,
-  ];
 
   if (data) {
     return (
@@ -84,25 +126,7 @@ export const QuestionDetails = () => {
                 <Divider />
 
                 <h3>Respuestas</h3>
-
-                <Comment
-                  actions={actions}
-                  author={<a>Han Solo</a>}
-                  avatar={
-                    <Avatar
-                      src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                      alt="Han Solo"
-                    />
-                  }
-                  content={
-                    <p>
-                      We supply a series of design principles, practical patterns and high quality design
-                      resources (Sketch and Axure), to help people create their product prototypes beautifully
-                      and efficiently.
-                                    </p>
-                  }
-                  datetime={<span>{date}</span>}
-                />
+                {responses}
 
                 <Divider />
 
@@ -116,12 +140,25 @@ export const QuestionDetails = () => {
                     />
                   }
                   content={
-                    <Editor
-                    //onChange={this.handleChange}
-                    //onSubmit={this.handleSubmit}
-                    //submitting={submitting}
-                    //value={value}
-                    />
+                    <Form form={form}>
+                      <Form.Item>
+                        <TextArea 
+                          rows={4} 
+                          onChange={e => setComment(e.target.value)}
+                        />
+                      </Form.Item>
+                      <Form.Item>
+                        <Button 
+                          htmlType="submit" 
+                          type="primary" 
+                          onClick={() => {
+                            postComment(id, 'test', comment, useForceUpdate)
+                          }}
+                        >
+                          Publicar respuesta
+                          </Button>
+                      </Form.Item>
+                    </Form>
                   }
                 />
 
