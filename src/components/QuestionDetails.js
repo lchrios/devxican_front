@@ -1,142 +1,268 @@
-import React, { createElement, useState } from 'react';
-import { Layout, Breadcrumb, Avatar, Button, Row, Col, Comment, Form, Input, Divider, Tooltip } from 'antd';
-import { DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled } from '@ant-design/icons';
+import React, { createElement, useEffect, useState } from 'react';
+import { Layout, Breadcrumb, Avatar, Button, Row, Col, Comment, Form, Input, Divider, Tooltip, Popconfirm, message } from 'antd';
+import { DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled, DeleteFilled, DeleteOutlined, EditFilled, EditOutlined } from '@ant-design/icons';
+import { BrowserRouter as Router, useParams, Link, useHistory, Redirect } from "react-router-dom";
+import { useCookies } from 'react-cookie';
+import { LoginButton } from './LoginButton';
+import { LogoutButton } from './LogoutButton';
 
 const { Content } = Layout;
 
+const postComment = (questionId, author, description) => {
+  fetch('http://localhost:9999/questions/' + questionId + '/comments', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    body: JSON.stringify({
+      "date" : new Date(),
+      "author" : author,
+      "comment": description,
+      "answers" : [],
+      "likes" : 0,
+      "dislikes"   : 0
+    })
+  })
+  .then(resp => {
+    window.location.reload();
+  })
+}
+
+const deleteEntry = (questionId) => {
+  fetch('http://localhost:9999/questions/' + questionId, {
+    method: 'DELETE'
+  })
+  .then(() => {
+    window.location.replace('/');
+  })
+}
+
+const deleteComment = (questionId, commentId) => {
+  // fetch('http://localhost:9999/questions/' + questionId + '/comments/' + commentId, {
+  //   method: 'DELETE'
+  // })
+  // .then(() => {
+  //   window.location.reload();
+  // })
+}
+
+
 export const QuestionDetails = () => {
 
-    const [likes, setLikes] = useState(6);
-    const [dislikes, setDislikes] = useState(2);
-    const [action, setAction] = useState(null);
+  const [data, setData] = useState();
+  const [likes, setLikes] = useState(20);
+  const [dislikes, setDislikes] = useState(10);
+  const [action, setAction] = useState(null);
+  const [date, setDate] = useState();
+  const [form, ] = useState();
+  const [comment, setComment] = useState();
+  const [responses, setResponses] = useState([]);
+  const [cookies, setCookie] = useCookies(['name', 'pic_src', 'email', 'isAuth']);
 
-    const data = {
-          title: 'Ayuda con pregunta de arreglos para entrevista!',
-          description: 'Tengo este programa en C que ordena 100000 números aleatorios mediante el algoritmo de Merge Sort pero no me hace el ordenamiento y no escribe en el archivo resultado2.txt. El archivo resultado3.txt son los 100000 números aleatorios. Podrían ayudarme a ver mis errores y las posibles soluciones, de antemano , muchas gracias. El siguiente código es el main del programa, después del main viene la función del algoritmo de Merge Sort.',
-          author: 'emamex98',
-          date: '09-01-2020 13:00:00'
-        };
+  const { TextArea } = Input;
 
-    var date = new Date(data.date);
+  let { id } = useParams();
+  let history = useHistory();
 
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    date = date.toLocaleDateString('es-MX', options);
+  var comments = [];
 
-    const { TextArea } = Input;
-    const Editor = () => (
-        <>
-          <Form.Item>
-            <TextArea rows={4} />
-          </Form.Item>
-          <Form.Item>
-            <Button htmlType="submit" type="primary">
-              Publicar respuesta
-            </Button>
-          </Form.Item>
-        </>
-    );
+  useEffect(() => {
+    if (!data) {
 
-    const actions = [
-        <Tooltip key="comment-basic-like" title="Me gusta">
-          <span>
-            {createElement(action === 'liked' ? LikeFilled : LikeOutlined)}
-            <span className="comment-action"> {likes}</span>
-          </span>
-        </Tooltip>,
-        <Tooltip key="comment-basic-dislike" title="No me gusta">
-          <span>
-            {createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined)}
-            <span className="comment-action"> {dislikes}</span>
-          </span>
-        </Tooltip>,
-        <span key="comment-basic-reply-to">Responder</span>,
-      ];
+      fetch('http://localhost:9999/questions/' + id)
+        .then(response => response.json())
+        .then(data => {
 
+          setData(data[0]);
+
+          var tmp_date = new Date(data[0].date);
+          const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          setDate(tmp_date.toLocaleDateString('es-MX', options).toString());
+
+          if(data[0].answers){
+            for(var i=0; i< data[0].answers.length; i++){
+              console.log(data[0].answers[i].author)
+              comments.push(
+                <Comment
+                  actions={[
+                    <Tooltip key="comment-basic-like" title="Me gusta" >
+                      <span>
+                        {createElement(action === 'liked' ? LikeFilled : LikeOutlined)}
+                        <span className="comment-action"> {data[0].answers[i].likes}</span>
+                      </span>
+                    </Tooltip>,
+                    <Tooltip key="comment-basic-dislike" title="No me gusta">
+                      <span>
+                        {createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined)}
+                        <span className="comment-action"> {data[0].answers[i].dislikes}</span>
+                      </span>
+                    </Tooltip>,
+                    <Tooltip key="comment-basic-edit" title="Editar">
+                      {cookies.name === data[0].answers[i].author &&
+                        <span>
+                          {createElement(action === '' ? EditFilled : EditOutlined)}
+                        </span>
+                      }
+                    </Tooltip>,
+                    <Tooltip key="comment-basic-delete" title="Borrar">
+                      {cookies.name === data[0].answers[i].author &&
+                        <span>
+                          <Popconfirm
+                            title="¿En verdad deseas borrar esta pregunta?"
+                            onConfirm={() => {deleteComment(id, data[0].answers[i].id)}}
+                            okText="Sí"
+                            cancelText="No"
+                          >
+                            {createElement(action === '' ? DeleteFilled : DeleteOutlined)}
+                          </Popconfirm>
+                        </span>
+                      }
+                    </Tooltip>
+                  ]}
+                  author={data[0].answers[i].author}
+                  avatar={
+                    <Avatar
+                      src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                      alt="Han Solo"
+                    />
+                  }
+                  content={data[0].answers[i].comment}
+                  datetime={<span>{data[0].answers.date}</span>}
+                />
+              );
+            }
+            setResponses(comments);
+          }
+        });
+    }
+  });
+
+  if (data) {
     return (
-        <div>
+      <div>
 
-            <Breadcrumb style={{ margin: '16px 0' }}>
-                <Breadcrumb.Item>Foros</Breadcrumb.Item>
-                <Breadcrumb.Item>Preguntas de Entrevista</Breadcrumb.Item>
-            </Breadcrumb>
+        <Breadcrumb style={{ margin: '16px 0' }}>
+          <Breadcrumb.Item>Foros</Breadcrumb.Item>
+          <Breadcrumb.Item>Preguntas de Entrevista</Breadcrumb.Item>
+        </Breadcrumb>
 
-            <Content style={{ padding: '0 50px' }}>
+        <Content style={{ padding: '0 50px' }}>
 
-                <div className="site-layout-content" >
+          <div className="site-layout-content" >
 
-                    <Row>
-                        <Col span={18}>
+            <Row>
+              <Col span={18}>
 
-                            <h2>{data.title}</h2>
-                            <h5>Publicado por <a>{data.author}</a> el {date.toString()}</h5>
+                <h2>{data.title}</h2>
+                <h5>Publicado por <a>{data.author}</a> el {date}</h5>
 
-                            <br/>
+                <br />
+              
+                <div dangerouslySetInnerHTML={{ __html: data.description }} />
 
-                            <p>{data.description}</p>
+                {cookies.name === data.author && 
+                  <div align="right">
+                    <Divider />
+                    <Link to={"/editar/" + id}>
+                      <Button>Editar</Button>
+                    </Link>&nbsp;&nbsp;
+                    <Popconfirm
+                      title="¿En verdad deseas borrar esta pregunta?"
+                      onConfirm={() => {deleteEntry(id)}}
+                      okText="Sí"
+                      cancelText="No"
+                    >
+                      <Button danger>Eliminar</Button>
+                    </Popconfirm>
+                  </div>
+                }
+                <Divider />
 
-                            <Divider />
+                <h3>Respuestas</h3>
+                {responses}
 
-                            <h3>Respuestas</h3>
+                {cookies.isAuth === 'true' &&
+                  <>
+                  <Divider />
 
-                            <Comment
-                                actions={actions}
-                                author={<a>Han Solo</a>}
-                                avatar={
-                                    <Avatar
-                                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                                    alt="Han Solo"
-                                    />
-                                }
-                                content={
-                                    <p>
-                                    We supply a series of design principles, practical patterns and high quality design
-                                    resources (Sketch and Axure), to help people create their product prototypes beautifully
-                                    and efficiently.
-                                    </p>
-                                }
-                                datetime={<span>{date}</span>}
-                                />
+                  <h3>Responder</h3>
 
-                            <Divider />
+                  <Comment
+                    avatar={
+                      <Avatar
+                        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                        alt="Han Solo"
+                      />
+                    }
+                    content={
+                      <Form form={form}>
+                        <Form.Item>
+                          <TextArea 
+                            rows={4} 
+                            onChange={e => setComment(e.target.value)}
+                          />
+                        </Form.Item>
+                        <Form.Item>
+                          <Button 
+                            htmlType="submit" 
+                            type="primary" 
+                            onClick={() => {
+                              postComment(id, cookies.name, comment)
+                            }}
+                          >
+                            Publicar respuesta
+                            </Button>
+                        </Form.Item>
+                      </Form>
+                    }
+                  />
+                  </>
+                }
 
-                            <h3>Responder</h3>
+              </Col>
 
-                            <Comment
-                                avatar={
-                                    <Avatar
-                                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                                    alt="Han Solo"
-                                    />
-                                }
-                                content={
-                                    <Editor
-                                    //onChange={this.handleChange}
-                                    //onSubmit={this.handleSubmit}
-                                    //submitting={submitting}
-                                    //value={value}
-                                    />
-                                }
-                            />
+              <Col span={6} style={{ padding: '0 50px' }}>
 
-                        </Col>
+              { cookies.isAuth === 'true' && 
+                  <span>
+                      
+                      <Link to="/nueva">
+                          <Button type='primary' size='large'>Publicar una pregunta</Button>
+                      </Link>
 
-                        <Col span={6} style={{ padding: '0 50px' }}>
+                      <Divider />
 
-                            <Button type='primary' size='large'>Publicar una pregunta</Button>
-                            
-                            <br/><br/>
-                            
-                            <p><a>Mis preguntas recientes</a></p>
-                            <p><a>Mis respuestas recientes</a></p>
-                            <p><a>Preguntas populares en la red</a></p>
+                      Hola, <b>{cookies.name}</b>
+                      
+                      <br/><br/>                                    
+                      <p><a>Mis preguntas recientes</a></p>
+                      <p><a>Mis respuestas recientes</a></p>
+                      <p><a>Preguntas populares en la red</a></p>
 
-                        </Col>
+                      <LogoutButton />
+                  </span>
+              }
 
-                    </Row>
+              { cookies.isAuth === 'false' && 
+                  <span>
+                      <h3>Únete a la conversación</h3>
+                      <LoginButton />
+                  </span>
+              
+              }
 
-                </div>
+              </Col>
 
-            </Content>
-        </div>
+            </Row>
+
+          </div>
+
+        </Content>
+      </div>
     )
+  } else {
+    return ("")
+  }
+
 }

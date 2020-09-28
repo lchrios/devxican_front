@@ -4,6 +4,9 @@ import { Layout, Menu } from 'antd';
 
 import { Home } from './components/Home';
 import { QuestionDetails } from './components/QuestionDetails';
+import { PostQuestion } from './components/PostQuestion';
+import { EditQuestion } from './components/EditQuestion';
+import { Profile } from './components/Profile';
 
 import 'antd/dist/antd.css';
 import './App.css';
@@ -34,9 +37,19 @@ export const App = (props) => {
               <Route path="/pregunta/:id">
                 <QuestionDetails />
               </Route>
+              <Route path="/nueva">
+                <PostQuestion />
+              </Route>
+              <Route path="/perfil">
+                <Profile />
+              </Route>
+              <Route path="/editar/:id">
+                <EditQuestion />
+              </Route>
               <Route path="/">
                 <Home />
               </Route>
+              
             </Switch>
           
         </Content>
