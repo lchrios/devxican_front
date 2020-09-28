@@ -14,7 +14,7 @@ export const LogoutButton = () => {
       setCookie('isAuth', false, { path: '/' });
       window.location.reload();
     }}>
-      Log Out
+      Cerrar Sesión
     </Button>
 
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, List, Avatar, Button, Row, Col } from 'antd';
+import { Layout, List, Avatar, Button, Row, Col, Divider } from 'antd';
 import { BrowserRouter as Router, Link } from "react-router-dom";
 import { useCookies } from 'react-cookie';
 import { LoginButton } from './LoginButton';
@@ -60,6 +60,10 @@ export const Home = () => {
                                     <Link to="/nueva">
                                         <Button type='primary' size='large'>Publicar una pregunta</Button>
                                     </Link>
+
+                                    <Divider />
+
+                                    Hola, <b>{cookies.name}</b>
 
                                     <br/><br/>                                    
                                     <p><a>Mis preguntas recientes</a></p>

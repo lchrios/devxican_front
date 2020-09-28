@@ -1,9 +1,11 @@
 import React, { createElement, useState } from 'react';
 import { Layout, Breadcrumb, Avatar, Button, Row, Col, Comment, Form, Input, Divider, Tooltip, Radio } from 'antd';
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { useCookies } from 'react-cookie';
+import { useAuth0 } from "@auth0/auth0-react";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { LogoutButton } from './LogoutButton';
 
 const { Content } = Layout;
 
@@ -32,12 +34,19 @@ const postEntry = (title, author, description, history) => {
 
 export const PostQuestion = () => {
 
+  const { loginWithRedirect } = useAuth0();
+  const [cookies, setCookie] = useCookies(['name', 'pic_src', 'email', 'isAuth']);
+
+  if(cookies.isAuth === 'false'){
+    loginWithRedirect();
+  }
+
   const [value, setValue] = useState('');
   const [form, ] = useState();
   const [title, setTile] = useState();
   const [author, setAuthor] = useState();
   const [description, setDescription] = useState();
-  const [cookies, setCookie] = useCookies(['name', 'pic_src', 'email', 'isAuth']);
+  
 
   let history = useHistory();
 
@@ -86,9 +95,17 @@ export const PostQuestion = () => {
 
                       <Col span={6} style={{ padding: '0 50px' }}>
                           
-                          <p><a>Mis preguntas recientes</a></p>
-                          <p><a>Mis respuestas recientes</a></p>
-                          <p><a>Preguntas populares en la red</a></p>
+                        <span>
+
+                            Hola, <b>{cookies.name}</b>
+
+                            <br/><br/>                                    
+                            <p><a>Mis preguntas recientes</a></p>
+                            <p><a>Mis respuestas recientes</a></p>
+                            <p><a>Preguntas populares en la red</a></p>
+
+                            <LogoutButton />
+                        </span>
 
                       </Col>
 
