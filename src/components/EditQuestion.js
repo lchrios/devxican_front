@@ -9,21 +9,27 @@ import { LogoutButton } from './LogoutButton';
 
 const { Content } = Layout;
 
-const repostEntry = (questionId, title, description, history) => {
-  // fetch('http://localhost:9999/questions/' + questionId, {
-  //   method: 'PUT',
-  //   headers: {
-  //     'Content-Type': 'application/json'
-  //   },
-  //   redirect: 'follow',
-  //   body: JSON.stringify({
-  //     "title" : title,
-  //     "description": description
-  //   })
-  // })
-  // .then(e => {
-  //   history.push("/pregunta/" + questionId);
-  // });
+const repostEntry = (questionId, title, description, date, author, history) => {
+  fetch('http://localhost:9999/questions/' + questionId, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    body: JSON.stringify({
+      "title" : title,
+      "description": description,
+      "date" : date,
+      "author" : author,
+      "description": description,
+      "answers" : [],
+      "likes" : 0,
+      "dislikes"   : 0
+    })
+  })
+  .then(e => {
+    history.push("/pregunta/" + questionId);
+  });
 
   history.push("/pregunta/" + questionId);
 }
@@ -106,7 +112,7 @@ export const EditQuestion = () => {
                             />
                           </Form.Item>
                           <Form.Item>
-                            <Button type="primary" onClick={() => {repostEntry(id, title, description, history)}}>Publicar</Button>
+                            <Button type="primary" onClick={() => {repostEntry(id, title, description, data.date, data.author, history)}}>Publicar</Button>
                           </Form.Item>
                         </Form>
 
