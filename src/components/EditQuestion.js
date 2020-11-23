@@ -10,7 +10,12 @@ import { LogoutButton } from './LogoutButton';
 const { Content } = Layout;
 
 const repostEntry = (questionId, title, description, date, author, history) => {
-  fetch('http://localhost:9999/questions/' + questionId, {
+
+  if(title === '' || description === ''){
+    return;
+  }
+
+  fetch(process.env.REACT_APP_API_URL + '/questions/' + questionId, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -57,7 +62,7 @@ export const EditQuestion = () => {
   useEffect(() => {
     if (!data) {
 
-      fetch('http://localhost:9999/questions/' + id)
+      fetch(process.env.REACT_APP_API_URL + '/questions/' + id)
       .then(response => response.json())
       .then(data => {
         setData(data[0]);
