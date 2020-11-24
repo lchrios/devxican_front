@@ -9,7 +9,12 @@ import { LogoutButton } from './LogoutButton';
 const { Content } = Layout;
 
 const postComment = (questionId, author, description) => {
-  fetch('http://localhost:9999/questions/' + questionId + '/comments', {
+
+  if(description === ''){
+    return;
+  }
+
+  fetch(process.env.REACT_APP_API_URL + '/questions/' + questionId + '/comments', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -30,7 +35,7 @@ const postComment = (questionId, author, description) => {
 }
 
 const deleteEntry = (questionId) => {
-  fetch('http://localhost:9999/questions/' + questionId, {
+  fetch(process.env.REACT_APP_API_URL + '/questions/' + questionId, {
     method: 'DELETE'
   })
   .then(() => {
@@ -39,12 +44,12 @@ const deleteEntry = (questionId) => {
 }
 
 const deleteComment = (questionId, commentId) => {
-  // fetch('http://localhost:9999/questions/' + questionId + '/comments/' + commentId, {
-  //   method: 'DELETE'
-  // })
-  // .then(() => {
-  //   window.location.reload();
-  // })
+  fetch(process.env.REACT_APP_API_URL + '/questions/' + questionId + '/comments/' + commentId, {
+    method: 'DELETE'
+  })
+  .then(() => {
+    window.location.reload();
+  })
 }
 
 
@@ -70,7 +75,7 @@ export const QuestionDetails = () => {
   useEffect(() => {
     if (!data) {
 
-      fetch('http://localhost:9999/questions/' + id)
+      fetch(process.env.REACT_APP_API_URL + '/questions/' + id)
         .then(response => response.json())
         .then(data => {
 
@@ -123,7 +128,7 @@ export const QuestionDetails = () => {
                   author={data[0].answers[i].author}
                   avatar={
                     <Avatar
-                      src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                      src={process.env.REACT_APP_APP_URL + "avatar.png"}
                       alt="Han Solo"
                     />
                   }
@@ -191,7 +196,7 @@ export const QuestionDetails = () => {
                   <Comment
                     avatar={
                       <Avatar
-                        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                        src={process.env.REACT_APP_APP_URL + "avatar.png"}
                         alt="Han Solo"
                       />
                     }

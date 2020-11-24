@@ -14,7 +14,7 @@ export const Home = () => {
     
     useEffect(() => {
         if(!data) {
-            fetch('http://localhost:9999/questions')
+            fetch(process.env.REACT_APP_API_URL + '/questions')
             .then(response => response.json())
             .then(data => setData(data));
         }
@@ -42,7 +42,7 @@ export const Home = () => {
                                     actions={[<a key="list-loadmore-edit" href={'/pregunta/' + item._id} >Ver pregunta</a>]}
                                 >
                                     <List.Item.Meta
-                                    avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                                    avatar={<Avatar src={process.env.REACT_APP_APP_URL + "avatar.png"} />}
                                     title={<a href={'/pregunta/' + item._id}>{item.title}</a>}
                                     description={item.description.replace(/<\/?[^>]+(>|$)/g, "")}
                                     />
@@ -74,7 +74,7 @@ export const Home = () => {
                                 </span>
                             }
 
-                            { cookies.isAuth === 'false' && 
+                            { cookies.isAuth !== 'true' && 
                                 <span>
                                     <h3>Únete a la conversación</h3>
                                     <LoginButton />

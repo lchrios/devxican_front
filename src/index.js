@@ -14,8 +14,8 @@ import { Auth0Provider } from "@auth0/auth0-react";
 ReactDOM.render(
   <Auth0Provider
     domain="eel-tec.auth0.com"
-    clientId="pZ01yFUM6Nki4qfPnKoRiAn3TuvvO7bf"
-    redirectUri="http://localhost:3000/perfil"
+    clientId={process.env.REACT_APP_AUTH0_CLIENT}
+    redirectUri={process.env.REACT_APP_CALLBACK_URL}
   >
     <App />
   </Auth0Provider>,
