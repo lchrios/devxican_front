@@ -10,7 +10,12 @@ import { LogoutButton } from './LogoutButton';
 const { Content } = Layout;
 
 const postEntry = (title, author, description, history) => {
-  fetch('http://localhost:9999/questions', {
+
+  if(title === '' || description === ''){
+    return;
+  }
+
+  fetch(process.env.REACT_APP_API_URL + '/questions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -67,11 +72,7 @@ export const PostQuestion = () => {
 
                       <Form
                         layout="vertical"
-                        // {...formItemLayout}
-                        // layout={formLayout}
                         form={form}
-                        // initialValues={{ layout: formLayout }}
-                        // onValuesChange={onFormLayoutChange}
                       >
                         <Form.Item label="Título">
                           <Input size="large" onChange={e => setTile(e.target.value)} />
